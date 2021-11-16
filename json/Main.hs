@@ -78,6 +78,14 @@ spanParser f =
     let (char, rest) = span f input
      in Just (rest, char)
 
+nullnt :: Parser [a] -> Parser [a]
+nullnt (Parser p) = Parser $ \input ->
+  do
+    (input', xs) <- p input
+    if null xs
+      then Nothing
+      else Just (input', xs)
+
 jsonNumber :: Parser JSONValue
 jsonNumber = f <$> spanParser isDigit
   where
