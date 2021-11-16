@@ -25,6 +25,12 @@ newtype Parser val = Parser
   { parse :: String -> Maybe (String, val)
   }
 
+-- Parser Functor proof
+instance Functor Parser where
+  fmap f (Parser p) = Parser $ \input -> do
+    (input', x) <- p input
+    Just (input', f x)
+
 -- JSONNull :: Parser JSONValue
 -- JSONNull = undefined
 
