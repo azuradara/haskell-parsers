@@ -1,6 +1,7 @@
 module Main where
 
 import Control.Applicative (Alternative, empty, (<|>))
+import Data.Char (isDigit)
 
 -- AST to handle possible JSON values
 data JSONValue
@@ -70,6 +71,17 @@ jsonBool = f <$> (parseString "true" <|> parseString "false")
     f "true" = JSONBool True
     f "false" = JSONBool False
     f _ = undefined
+
+spanParser :: (Char -> Bool) -> Parser String
+spanParser f =
+  Parser $ \input ->
+    let (char, rest) = span f input
+     in Just (rest, char)
+
+jsonNumber :: Parser JSONValue
+jsonNumber = f <$> spanParser isDigit
+  where
+    f digits = JSONNumber $ read digits
 
 -- Ultimate parser
 jsonValue :: Parser JSONValue
