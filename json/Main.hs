@@ -64,8 +64,16 @@ parseChar c =
 parseString :: String -> Parser String
 parseString = traverse parseChar
 
--- JSONValue :: Parser JSONValue
--- JSONValue = undefined
+jsonBool :: Parser JSONValue
+jsonBool = f <$> (parseString "true" <|> parseString "false")
+  where
+    f "true" = JSONBool True
+    f "false" = JSONBool False
+    f _ = undefined
+
+-- Ultimate parser
+jsonValue :: Parser JSONValue
+jsonValue = jsonNull <|> jsonBool
 
 main :: IO ()
 main = undefined
