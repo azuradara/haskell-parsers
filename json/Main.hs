@@ -31,6 +31,14 @@ instance Functor Parser where
     (input', x) <- p input
     Just (input', f x)
 
+-- Parser Applicative proof
+instance Applicative Parser where
+  pure x = Parser $ \input -> Just (input, x)
+  (Parser parser1) <*> (Parser parser2) = Parser $ \input -> do
+    (input', f) <- parser1 input
+    (input'', a) <- parser2 input'
+    Just (input'', f a)
+
 -- JSONNull :: Parser JSONValue
 -- JSONNull = undefined
 
