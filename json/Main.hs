@@ -1,5 +1,7 @@
 module Main where
 
+import Control.Applicative (Alternative, empty, (<|>))
+
 -- AST to handle possible JSON values
 data JSONValue
   = JSONNull
@@ -38,6 +40,11 @@ instance Applicative Parser where
     (input', f) <- parser1 input
     (input'', a) <- parser2 input'
     Just (input'', f a)
+
+instance Alternative Parser where
+  empty = Parser $ const Nothing
+  (Parser parser1) <|> (Parser parser2) =
+    Parser $ \input -> parser1 input <|> parser2 input
 
 jsonNull :: Parser JSONValue
 jsonNull = JSONNull <$ parseString "null"
