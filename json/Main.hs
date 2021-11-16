@@ -39,8 +39,8 @@ instance Applicative Parser where
     (input'', a) <- parser2 input'
     Just (input'', f a)
 
--- JSONNull :: Parser JSONValue
--- JSONNull = undefined
+jsonNull :: Parser JSONValue
+jsonNull = JSONNull <$ parseString "null"
 
 -- Char Parser
 parseChar :: Char -> Parser Char
@@ -54,8 +54,8 @@ parseChar c =
 
 -- String Parser
 -- [Parser Char] -> Parser [Char]
--- parseString :: String -> Parser String
--- parseString input = sequenceA . map parseChar
+parseString :: String -> Parser String
+parseString = traverse parseChar
 
 -- JSONValue :: Parser JSONValue
 -- JSONValue = undefined
